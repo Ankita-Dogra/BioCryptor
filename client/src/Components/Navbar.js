@@ -9,10 +9,11 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <a href="#" className="navbar-brand">
+      <a href="/" className="navbar-brand">
         BioCryptor
       </a>
       <div className={`navbar-menu ${menuActive ? "active" : ""}`}>
+        <a href="/register">Register</a>
         <a href="/encrypt">Encrypt</a>
         <a href="/decrypt">Decrypt</a>
       </div>

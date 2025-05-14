@@ -1,4 +1,4 @@
-const CPABEUserRegistry = artifacts.require("CPABEUserRegistry");
+const CPABEUserRegistry = artifacts.require("RegistrationLog");
 
 module.exports = async function (deployer, network, accounts) {
   const abi = CPABEUserRegistry.abi; // Extract ABI from the compiled contract

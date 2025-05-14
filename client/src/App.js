@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Components/Home.js";
-// import Register from "./Components/Register.js";
+import Register from "./Components/Register.js";
 import Encrypt from "./Components/Encrypt.js";
 import Decrypt from "../src/Components/Decrypt.js";
 import Navbar from "./Components/Navbar.js";
@@ -13,7 +13,7 @@ function App() {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* <Route path="/register" element={<Register />} /> */}
+        <Route path="/register" element={<Register />} />
         <Route path="/encrypt" element={<Encrypt />} />
         <Route path="/decrypt" element={<Decrypt />} />
       </Routes>
