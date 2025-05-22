@@ -258,14 +258,14 @@ const handleDecrypt = async () => {
   //     // 3️⃣ Capture face image and hash
   //     const { blob: faceBlob, hash: capturedHash } = await captureFaceImage();
 
-      // 4️⃣ Match facial hash (SHA256)
-      // if (
-      //   "0x89d168207fd53614da745f4dafa19ad3ea0af56046c7b8c37d8fd04ed982dd52" !==
-      //   storedFacialHash
-      // ) {
-      //   alert("Facial hash verification failed.");
-      //   return;
-      // }
+  //     // 4️⃣ Match facial hash (SHA256)
+  //     if (
+  //       "0x89d168207fd53614da745f4dafa19ad3ea0af56046c7b8c37d8fd04ed982dd52" !==
+  //       storedFacialHash
+  //     ) {
+  //       alert("Facial hash verification failed.");
+  //       return;
+  //     }
 
       // 5️⃣ Facial recognition via Python backend
       // const formData = new FormData();
@@ -292,33 +292,33 @@ const handleDecrypt = async () => {
   // };
 
 
-  // return (
-  //   <div>
-  //     <h1>Decrypt Data</h1>
-  //     <div>
-  //       <label>Enter IPFS CID:</label>
-  //       <input
-  //         type="text"
-  //         value={cidInput}
-  //         onChange={(e) => setCidInput(e.target.value)}
-  //         placeholder="Qm..."
-  //         style={{ width: "300px" }}
-  //       />
-  //       {showCamera && (
-  //         <div style={{ textAlign: "center", marginTop: "20px" }}>
-  //           <p>📷 Capturing your face... please look into the camera.</p>
-  //         </div>
-//         )}
-//       </div>
-//       <button onClick={handleDecrypt}>Start Decryption</button>
-//       {decryptedData && (
-//         <div>
-//           <h3>Decrypted Data:</h3>
-//           <p>{decryptedData}</p>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
+  return (
+    <div>
+      <h1>Decrypt Data</h1>
+      <div>
+        <label>Enter IPFS CID:</label>
+        <input
+          type="text"
+          value={cidInput}
+          onChange={(e) => setCidInput(e.target.value)}
+          placeholder="Qm..."
+          style={{ width: "300px" }}
+        />
+        {showCamera && (
+          <div style={{ textAlign: "center", marginTop: "20px" }}>
+            <p>📷 Capturing your face... please look into the camera.</p>
+          </div>
+        )}
+      </div>
+      <button onClick={handleDecrypt}>Start Decryption</button>
+      {decryptedData && (
+        <div>
+          <h3>Decrypted Data:</h3>
+          <p>{decryptedData}</p>
+        </div>
+      )}
+    </div>
+  );
+}
 
-// export default Decrypt;
+export default Decrypt;
