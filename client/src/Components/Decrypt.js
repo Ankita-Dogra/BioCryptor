@@ -185,35 +185,87 @@ function Decrypt() {
     return decrypted.toString(CryptoJS.enc.Utf8);
   };
 
-  const handleDecrypt = async () => {
-    try {
-      if (!cidInput.trim()) {
-        alert("Please enter a valid CID.");
-        return;
-      }
+  const verifyFaceWithDatabase = async (faceBlob) => {
+  try {
+    const formData = new FormData();
+    formData.append("image", faceBlob);
 
-      // 1️⃣ Fetch IPFS data
-      const { encryptedData, aesKey, iv, accessPolicy } = await fetchFromIPFS(
-        cidInput.trim()
-      );
+    const response = await fetch("http://localhost:5000/verify-face", {
+      method: "POST",
+      body: formData,
+    });
 
-      // 2️⃣ Access Policy Check
-      if (!satisfiesAccessPolicy(accessPolicy)) {
-        alert("Access policy check failed.");
-        return;
-      }
+    const result = await response.json();
+    return result.matched; // Returns true if face matches, false otherwise
+  } catch (error) {
+    console.error("Face verification failed:", error);
+    return false;
+  }
+};
 
-      // 3️⃣ Capture face image and hash
-      const { blob: faceBlob, hash: capturedHash } = await captureFaceImage();
+const handleDecrypt = async () => {
+  try {
+    if (!cidInput.trim()) {
+      alert("Please enter a valid CID.");
+      return;
+    }
+
+    // 1️⃣ Fetch Data from IPFS
+    const { encryptedData, aesKey, iv, accessPolicy } = await fetchFromIPFS(cidInput.trim());
+
+    // 2️⃣ Check Access Policy
+    if (!satisfiesAccessPolicy(accessPolicy)) {
+      alert("Access policy check failed.");
+      return;
+    }
+
+    // 3️⃣ Capture Face Image & Send for Verification
+    const { blob: faceBlob, hash: capturedHash } = await captureFaceImage();
+    const isFaceMatched = await verifyFaceWithDatabase(faceBlob);
+
+    if (!isFaceMatched) {
+      alert("Face authentication failed.");
+      return;
+    }
+
+    // ✅ All checks passed — decrypt the data
+    const plainText = decryptData(encryptedData, iv, aesKey);
+    setDecryptedData(plainText);
+  } catch (error) {
+    console.error("Decryption error:", error);
+    alert("Decryption failed.");
+  }
+};
+
+  // const handleDecrypt = async () => {
+  //   try {
+  //     if (!cidInput.trim()) {
+  //       alert("Please enter a valid CID.");
+  //       return;
+  //     }
+
+  //     // 1️⃣ Fetch IPFS data
+  //     const { encryptedData, aesKey, iv, accessPolicy } = await fetchFromIPFS(
+  //       cidInput.trim()
+  //     );
+
+  //     // 2️⃣ Access Policy Check
+  //     if (!satisfiesAccessPolicy(accessPolicy)) {
+  //       alert("Access policy check failed.");
+  //       return;
+  //     }
+
+  //     // 3️⃣ Capture face image and hash
+  //     const { blob: faceBlob, hash: capturedHash } = await captureFaceImage();
 
       // 4️⃣ Match facial hash (SHA256)
-      if (
-        "0x89d168207fd53614da745f4dafa19ad3ea0af56046c7b8c37d8fd04ed982dd52" !==
-        storedFacialHash
-      ) {
-        alert("Facial hash verification failed.");
-        return;
-      }
+      // if (
+      //   "0x89d168207fd53614da745f4dafa19ad3ea0af56046c7b8c37d8fd04ed982dd52" !==
+      //   storedFacialHash
+      // ) {
+      //   alert("Facial hash verification failed.");
+      //   return;
+      // }
 
       // 5️⃣ Facial recognition via Python backend
       // const formData = new FormData();
@@ -231,42 +283,42 @@ function Decrypt() {
       // }
 
       // ✅ All passed — decrypt
-      const plainText = decryptData(encryptedData, iv, aesKey);
-      setDecryptedData(plainText);
-    } catch (error) {
-      console.error("Decryption error:", error);
-      alert("Decryption failed.");
-    }
-  };
+  //     const plainText = decryptData(encryptedData, iv, aesKey);
+  //     setDecryptedData(plainText);
+  //   } catch (error) {
+  //     console.error("Decryption error:", error);
+  //     alert("Decryption failed.");
+  //   }
+  // };
 
 
-  return (
-    <div>
-      <h1>Decrypt Data</h1>
-      <div>
-        <label>Enter IPFS CID:</label>
-        <input
-          type="text"
-          value={cidInput}
-          onChange={(e) => setCidInput(e.target.value)}
-          placeholder="Qm..."
-          style={{ width: "300px" }}
-        />
-        {showCamera && (
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <p>📷 Capturing your face... please look into the camera.</p>
-          </div>
-        )}
-      </div>
-      <button onClick={handleDecrypt}>Start Decryption</button>
-      {decryptedData && (
-        <div>
-          <h3>Decrypted Data:</h3>
-          <p>{decryptedData}</p>
-        </div>
-      )}
-    </div>
-  );
-}
+  // return (
+  //   <div>
+  //     <h1>Decrypt Data</h1>
+  //     <div>
+  //       <label>Enter IPFS CID:</label>
+  //       <input
+  //         type="text"
+  //         value={cidInput}
+  //         onChange={(e) => setCidInput(e.target.value)}
+  //         placeholder="Qm..."
+  //         style={{ width: "300px" }}
+  //       />
+  //       {showCamera && (
+  //         <div style={{ textAlign: "center", marginTop: "20px" }}>
+  //           <p>📷 Capturing your face... please look into the camera.</p>
+  //         </div>
+//         )}
+//       </div>
+//       <button onClick={handleDecrypt}>Start Decryption</button>
+//       {decryptedData && (
+//         <div>
+//           <h3>Decrypted Data:</h3>
+//           <p>{decryptedData}</p>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
 
-export default Decrypt;
+// export default Decrypt;
